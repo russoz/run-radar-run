@@ -1,0 +1,10 @@
+---
+blip:
+  name: ruamel.yaml
+  is_new: true
+  description: TBD
+  references:
+    - https://sourceforge.net/projects/ruamel-yaml/
+    - https://github.com/commx/ruamel-yaml
+    - https://yaml.dev/doc/ruamel.yaml/
+    - https://stackoverflow.com/questions/tagged/ruamel.yaml?tab=newest&page=1&pagesize=15

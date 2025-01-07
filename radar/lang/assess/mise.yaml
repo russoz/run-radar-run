@@ -1,0 +1,9 @@
+---
+blip:
+  name: mise
+  is_new: true
+  description: >
+    Similar to pyenv, but for multiple languages.
+  references:
+    - https://mise.jdx.dev/
+    - https://github.com/ssbarnea/mise-action

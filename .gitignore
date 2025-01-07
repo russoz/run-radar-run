@@ -1,0 +1,9 @@
+.env
+.idea
+dist/*
+build/*
+*.egg-info
+.tox/*
+Pipfile*
+**/*.pyc
+**/__pycache__

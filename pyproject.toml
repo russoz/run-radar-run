@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "run-radar"
+version = "0.1"
+description = "Run Tech Radar"
+authors = ["Alexei Znamensky <russoz@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities"
+]
+keywords = [ "tech-radar" ]
+
+packages = [
+    { include = "run-radar" },
+    { include = "runradar" }
+]
+
+[tool.poetry.scripts]
+andebox = "run-radar:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyyaml = ">=5.4"
+docker = ">=7.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.3.1,<9.0.0"
+pytest-mock = "^3.10.0"
+pylint = ">=2.17.4,<4.0.0"
+flake8 = ">=6,<8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

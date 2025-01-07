@@ -1,0 +1,12 @@
+---
+blip:
+  name: Local Kubernetes distros
+  is_new: true
+  description: one of k0s, k3s, minik8s, minikube, ...
+  references:
+    - https://k0sproject.io/
+    - https://k3s.io/
+    - https://microk8s.io/
+    - https://minikube.sigs.k8s.io/
+    - https://kubernetes.io/
+    - https://www.rancher.com/quick-start

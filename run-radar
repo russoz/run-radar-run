@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# code: language=python tabSize=4
+#
+import argparse
+import pathlib
+
+from runradar.ingest import Ingester
+from runradar.publishers.twbyor import TXBYORPublisher
+
+
+source = pathlib.PosixPath.cwd()
+URL = "http://localhost:8080/"
+config = {"image": "wwwthoughtworks/build-your-own-radar:latest"}
+
+publishers = {
+    "tw-byor": TXBYORPublisher,
+}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input",
+        "-i",
+        type=pathlib.Path,
+        default="./radar",
+        help="radar input file in YAML format",
+    )
+    parser.add_argument(
+        "--open",
+        "-O",
+        help="open browser pointing to main page after build",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--publisher",
+        "-p",
+        default="tw-byor",
+        help="publisher for the data radar",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=pathlib.Path,
+        help="output path for the radar data, depends on publisher",
+    )
+    parser.add_argument(
+        "--run",
+        "-r",
+        help="run the radar using the data, depends on publisher",
+        action="store_true",
+    )
+
+    # subparser = parser.add_subparsers(dest="action", required=True)
+
+    # for action in []:
+    #     action.make_parser(subparser)
+
+    args = parser.parse_args()
+    ingester = Ingester(pathlib.Path(args.input))
+    radar = ingester.ingest()
+
+    print(f"{radar.blips}")
+
+    if args.publisher:
+        publisher_class = publishers[args.publisher]
+        publisher = publisher_class(radar)
+
+        if args.output:
+            publisher.write(args.output)
+
+        if args.run:
+            try:
+                print(f"\n\n*** URL = {publisher.url}")
+                publisher.run()
+            except KeyboardInterrupt:
+                pass
+            finally:
+                publisher.cleanup()
+
+    # try:
+    #     file = pathlib.Path(sys.argv[1])
+    #     with open(source / file):   # check if file exists
+    #         pass
+    #     url = (
+    #         f"{URL}?documentId=http%3A%2F%2Flocalhost%3A8080%2Ffiles%2F"
+    #         f"{urllib.parse.quote(str(file))}"
+    #     )
+    #     config.update(try_read_config(str(source / file) + ".config"))
+    # except IndexError:
+    #     pass
+
+    # pull_command = ["docker", "pull", config["image"]]
+    # run_command_begin = [
+    #     "docker", "run", "--rm", "-p8080:80", "-e", 'SERVER_NAMES="localhost 127.0.0.1"',
+    # ]
+    # run_command_end = [
+    #     "-v", f"{source}:/opt/build-your-own-radar/files", config["image"]
+    # ]
+    # run_command = (
+    #     run_command_begin
+    #     + (["-e", f'QUADRANTS={config["quadrants"]}']
+    #     if "quadrants" in config else [])
+    #     + (["-e", f'RINGS={config["rings"]}']
+    #     if "rings" in config else [])
+    #     + run_command_end
+    # )
+
+    # print(f"\n\n*** URL = {url}")
+
+    # try:
+    #     print(f"\n\n*** {' '.join(pull_command)}")
+    #     subprocess.run(pull_command, check=True)
+
+    #     print(f"\n\n*** {' '.join(run_command)}")
+    #     print("*** Use Ctrl-C to stop the container\n\n")
+    #     subprocess.run(run_command, check=False)
+    # except KeyboardInterrupt:
+    #     pass
+
+
+if __name__ == "__main__":
+    main()

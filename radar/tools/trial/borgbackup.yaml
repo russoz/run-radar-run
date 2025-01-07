@@ -1,0 +1,8 @@
+---
+blip:
+  name: borgbackup
+  is_new: false
+  description: backup software
+  references:
+    - https://borgbackup.readthedocs.io/en/stable/
+    - https://www.borgbase.com/
