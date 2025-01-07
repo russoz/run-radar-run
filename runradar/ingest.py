@@ -4,6 +4,7 @@
 from pathlib import Path
 
 import yaml
+from blessed import Terminal
 
 from .model import Blip
 from .model import Quadrant
@@ -11,13 +12,16 @@ from .model import Radar
 from .model import Ring
 
 
+term = Terminal()
+
+
 class Ingester:
     def __init__(self, path: Path) -> None:
         self.radar_path = path
-        print(f"Radar path: {path}")
+        print(f"Radar path: {path.absolute()}")
 
     def parse_blip(self, quadrant: Quadrant, ring: Ring, path: Path) -> Blip:
-        print(f"Processing blip: {path}")
+        print(f"Processing: {path}{term.clear_eol()}\r", end="", flush=True)
         with open(path) as blip_file:
             blip_spec = yaml.safe_load(blip_file)
 
@@ -47,9 +51,10 @@ class Ingester:
         print(f"Quadrants: {', '.join(q.name for q in quadrants)}")
 
         radar = Radar(rings, quadrants)
+        count = 0
 
-        for quadrant in quadrants:
-            for ring in rings:
+        for ring in rings:
+            for quadrant in quadrants:
                 blips_dir: Path = self.radar_path / quadrant.id / ring.id
                 if not blips_dir.exists():
                     continue
@@ -60,5 +65,7 @@ class Ingester:
                     if path.as_posix().endswith((".yaml", ".yml")):
                         blip = self.parse_blip(quadrant, ring, path)
                         radar.add_blip(blip)
+                        count = count + 1
+        print(f"Processed: {count:2} blips{term.clear_eol()}")
 
         return radar

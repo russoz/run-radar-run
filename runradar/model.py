@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 #
+import argparse
+import webbrowser
 from abc import ABC
 from abc import abstractmethod
 from collections import namedtuple
@@ -88,7 +90,9 @@ class RadarPresentation(ABC):
 class Publisher:
     publishing_url = None
 
-    def __init__(self, radar: Radar, options=None) -> None:
+    def __init__(
+        self, radar: Radar, options: Optional[argparse.Namespace] = None
+    ) -> None:
         self.radar = radar
         self.options = options
         self._output = None
@@ -119,3 +123,8 @@ class Publisher:
     def write(self, output: Path) -> None:
         with open(output, "w") as outputfile:
             outputfile.write(self.output)
+
+    def open_url(self, url: Optional[str] = None) -> None:
+        if not url:
+            url = self.url
+        webbrowser.open(url, new=1)

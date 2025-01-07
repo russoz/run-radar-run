@@ -7,6 +7,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import docker
+from blessed import Terminal
 
 from ..model import Publisher
 
@@ -54,8 +55,34 @@ class TXBYORPublisher(Publisher):
                 detach=True,
                 stream=True,
             )
-            for line in self.container.logs(stream=True):
-                print(line.decode("utf-8").strip())
+
+            try:
+                log_height = 10
+                term = Terminal()
+
+                print(term.hide_cursor(), end="")
+                print("\n" * (log_height + 1), end="")
+                print(f"{term.move_up(log_height)}", end="")
+                start_row, _ = term.get_location()
+
+                log_lines = []
+                for line in self.container.logs(stream=True):
+                    log_lines.append(line.decode("utf-8").strip())
+                    log_lines = log_lines[-log_height:]
+
+                    with term.location(0, start_row):
+                        for log_line in log_lines:
+                            print(
+                                f"{term.truncate(log_line)}{term.clear_eol()}",
+                                flush=True,
+                            )
+
+                    line = line.decode("utf-8").strip()
+                    if "Starting nginx server..." in line:
+                        if not self.options.run_only:
+                            self.open_url()
+            finally:
+                print(f"{term.normal_cursor()}{term.move_up()}{term.clear_eos()}")
 
     def cleanup(self):
         if self.container:

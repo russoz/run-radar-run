@@ -33,6 +33,7 @@ andebox = "run-radar:main"
 python = "^3.11"
 pyyaml = ">=5.4"
 docker = ">=7.1.0"
+blessed = ">=1.20.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3.1,<9.0.0"
