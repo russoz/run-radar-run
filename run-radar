@@ -6,12 +6,9 @@ import argparse
 import pathlib
 
 from runradar.ingest import Ingester
+from runradar.output import Printer
 from runradar.publishers.twbyor import TXBYORPublisher
 
-
-source = pathlib.PosixPath.cwd()
-URL = "http://localhost:8080/"
-config = {"image": "wwwthoughtworks/build-your-own-radar:latest"}
 
 publishers = {
     "tw-byor": TXBYORPublisher,
@@ -51,6 +48,12 @@ def main():
         help="only run the radar, depends on publisher",
         action="store_true",
     )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        help="do not print output",
+        action="store_true",
+    )
 
     # subparser = parser.add_subparsers(dest="action", required=True)
 
@@ -58,10 +61,12 @@ def main():
     #     action.make_parser(subparser)
 
     args = parser.parse_args()
-    ingester = Ingester(pathlib.Path(args.input))
+    ingester = Ingester(pathlib.Path(args.input), options=args)
     radar = ingester.ingest()
 
     if args.publisher:
+        p = Printer(args.quiet)
+
         publisher_class = publishers[args.publisher]
         publisher = publisher_class(radar, options=args)
 
@@ -70,7 +75,7 @@ def main():
 
         if args.run or args.run_only:
             try:
-                print(f"URL: {publisher.url}")
+                p.print(f"URL: {publisher.url}")
                 publisher.run()
             except KeyboardInterrupt:
                 pass

@@ -5,7 +5,7 @@ import argparse
 import webbrowser
 from abc import ABC
 from abc import abstractmethod
-from collections import namedtuple
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 from typing import Optional
@@ -16,8 +16,16 @@ from typing import Union
 OptionalStrOrListStr = Optional[Union[str, List[str]]]
 
 
-Ring = namedtuple("Ring", ["id", "name"])
-Quadrant = namedtuple("Quadrant", ["id", "name"])
+@dataclass
+class Ring:
+    id: str
+    name: str
+
+
+@dataclass
+class Quadrant:
+    id: str
+    name: str
 
 
 class Blip:
@@ -127,4 +135,5 @@ class Publisher:
     def open_url(self, url: Optional[str] = None) -> None:
         if not url:
             url = self.url
-        webbrowser.open(url, new=1)
+        if not self.options.run_only:
+            webbrowser.open(url, new=1)

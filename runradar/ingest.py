@@ -1,27 +1,32 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 #
+import argparse
 from pathlib import Path
+from typing import Optional
 
 import yaml
-from blessed import Terminal
 
 from .model import Blip
 from .model import Quadrant
 from .model import Radar
 from .model import Ring
-
-
-term = Terminal()
+from .output import Printer
 
 
 class Ingester:
-    def __init__(self, path: Path) -> None:
+    def __init__(
+        self, path: Path, options: Optional[argparse.Namespace] = None
+    ) -> None:
         self.radar_path = path
-        print(f"Radar path: {path.absolute()}")
+        self.options = options
+        self.printer = Printer(options.quiet)
+        self.printer.print(f"Radar path: {path.absolute()}")
 
     def parse_blip(self, quadrant: Quadrant, ring: Ring, path: Path) -> Blip:
-        print(f"Processing: {path}{term.clear_eol()}\r", end="", flush=True)
+        self.printer.print(
+            f"Processing: {path}{self.printer.term.clear_eol()}\r", end="", flush=True
+        )
         with open(path) as blip_file:
             blip_spec = yaml.safe_load(blip_file)
 
@@ -47,8 +52,8 @@ class Ingester:
 
         rings = [Ring(**r) for r in specs["rings"]]
         quadrants = [Quadrant(**q) for q in specs["quadrants"]]
-        print(f"Rings: {', '.join(r.name for r in rings)}")
-        print(f"Quadrants: {', '.join(q.name for q in quadrants)}")
+        self.printer.print(f"Rings: {', '.join(r.name for r in rings)}")
+        self.printer.print(f"Quadrants: {', '.join(q.name for q in quadrants)}")
 
         radar = Radar(rings, quadrants)
         count = 0
@@ -66,6 +71,7 @@ class Ingester:
                         blip = self.parse_blip(quadrant, ring, path)
                         radar.add_blip(blip)
                         count = count + 1
-        print(f"Processed: {count:2} blips{term.clear_eol()}")
+
+        self.printer.print(f"Processed: {count:2} blips{self.printer.term.clear_eol()}")
 
         return radar

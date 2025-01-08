@@ -7,9 +7,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import docker
-from blessed import Terminal
 
 from ..model import Publisher
+from ..output import Printer
 
 
 class TXBYORPublisher(Publisher):
@@ -34,7 +34,7 @@ class TXBYORPublisher(Publisher):
         return json.dumps(results)
 
     def run(self):
-        with TemporaryDirectory(dir=".") as temp_dir:
+        with TemporaryDirectory(dir=".", prefix=".runradar-") as temp_dir:
             os.chmod(temp_dir, 0o755)
             temp_output = Path(temp_dir) / self.run_output_file
             self.write(temp_output)
@@ -56,33 +56,17 @@ class TXBYORPublisher(Publisher):
                 stream=True,
             )
 
-            try:
-                log_height = 10
-                term = Terminal()
+            p = Printer(self.options.quiet)
 
-                print(term.hide_cursor(), end="")
-                print("\n" * (log_height + 1), end="")
-                print(f"{term.move_up(log_height)}", end="")
-                start_row, _ = term.get_location()
+            def trigger_browser(line):
+                if "Starting nginx server..." in line:
+                    self.open_url()
 
-                log_lines = []
-                for line in self.container.logs(stream=True):
-                    log_lines.append(line.decode("utf-8").strip())
-                    log_lines = log_lines[-log_height:]
-
-                    with term.location(0, start_row):
-                        for log_line in log_lines:
-                            print(
-                                f"{term.truncate(log_line)}{term.clear_eol()}",
-                                flush=True,
-                            )
-
-                    line = line.decode("utf-8").strip()
-                    if "Starting nginx server..." in line:
-                        if not self.options.run_only:
-                            self.open_url()
-            finally:
-                print(f"{term.normal_cursor()}{term.move_up()}{term.clear_eos()}")
+            p.logger(
+                stream=self.container.logs(stream=True),
+                log_height=10,
+                trigger=trigger_browser,
+            )
 
     def cleanup(self):
         if self.container:
