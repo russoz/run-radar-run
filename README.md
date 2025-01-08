@@ -1,13 +1,13 @@
-Tech Radar
-==========
+Run, Radar, Run
+===============
 
-Using the Radar
+Using run-radar
 ---------------
 
 ### Requirements
 
-* Docker must be running.
-* Python3 must be installed.
+* Python3.12+
+* Docker (for the TWBYOR radar)
 
 ### Running the Radar
 
