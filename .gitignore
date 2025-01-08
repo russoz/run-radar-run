@@ -7,3 +7,4 @@ build/*
 Pipfile*
 **/*.pyc
 **/__pycache__
+.python-version

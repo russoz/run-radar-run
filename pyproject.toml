@@ -30,7 +30,7 @@ packages = [
 andebox = "run-radar:main"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 pyyaml = ">=5.4"
 docker = ">=7.1.0"
 blessed = ">=1.20.0"
