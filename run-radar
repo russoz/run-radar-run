@@ -55,11 +55,6 @@ def main():
         action="store_true",
     )
 
-    # subparser = parser.add_subparsers(dest="action", required=True)
-
-    # for action in []:
-    #     action.make_parser(subparser)
-
     args = parser.parse_args()
     ingester = Ingester(pathlib.Path(args.input), options=args)
     radar = ingester.ingest()
