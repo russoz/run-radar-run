@@ -6,7 +6,8 @@ blip:
   references:
     - https://k0sproject.io/
     - https://k3s.io/
+    - https://k3d.io/stable/
+    - https://www.rancher.com/quick-start
     - https://microk8s.io/
     - https://minikube.sigs.k8s.io/
     - https://kubernetes.io/
-    - https://www.rancher.com/quick-start
