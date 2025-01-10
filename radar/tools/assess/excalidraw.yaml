@@ -1,0 +1,7 @@
+---
+blip:
+  name: Excalidraw
+  is_new: true
+  description: TBD
+  references:
+    - https://excalidraw.com/
