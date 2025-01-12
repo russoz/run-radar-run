@@ -8,15 +8,19 @@ from tempfile import TemporaryDirectory
 
 import docker
 
-from ..model import Publisher
+from ..model import AbstractPublisher
 from ..output import Printer
 
 
-class TXBYORPublisher(Publisher):
+class Publisher(AbstractPublisher):
     container_image = "wwwthoughtworks/build-your-own-radar:latest"
     container = None
     publishing_url = "http://localhost:8080/"
     run_output_file = "run-radar-run.json"
+
+    @classmethod
+    def cli_id(cls):
+        return "twbyor"
 
     def make_output(self):
         results = []

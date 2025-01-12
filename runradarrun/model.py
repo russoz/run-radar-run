@@ -95,7 +95,7 @@ class RadarPresentation(ABC):
         pass
 
 
-class Publisher:
+class AbstractPublisher:
     publishing_url = None
 
     def __init__(
@@ -106,6 +106,10 @@ class Publisher:
         self._output = None
 
     def make_output(self) -> str:
+        raise NotImplementedError()
+
+    @classmethod
+    def cli_id(cls):
         raise NotImplementedError()
 
     @property

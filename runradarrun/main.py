@@ -3,16 +3,35 @@
 # code: language=python tabSize=4
 #
 import argparse
+import importlib
 import pathlib
+import pkgutil
 
+import runradarrun.publishers
 from runradarrun.ingest import Ingester
 from runradarrun.output import Printer
-from runradarrun.publishers.twbyor import TXBYORPublisher
 
 
-publishers = {
-    "twbyor": TXBYORPublisher,
-}
+def iter_namespace(ns_pkg):
+    # Specifying the second argument (prefix) to iter_modules makes the
+    # returned name an absolute name instead of a relative one. This allows
+    # import_module to work without having to do additional modification to
+    # the name.
+    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
+
+
+def load_publishers():
+    mod_names = [name for finder, name, ispkg in iter_namespace(runradarrun.publishers)]
+
+    results = {}
+    for name in mod_names:
+        publisher = getattr(importlib.import_module(name), "Publisher")
+        cli_id = publisher.cli_id()
+        results[cli_id] = publisher
+    return results
+
+
+publishers = load_publishers()
 
 
 def main():
@@ -51,6 +70,7 @@ def main():
     parser.add_argument(
         "input",
         type=pathlib.Path,
+        nargs="?",
         default="./radar",
         help="radar definition directory",
     )
