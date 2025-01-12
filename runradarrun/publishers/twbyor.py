@@ -43,6 +43,7 @@ class Publisher(AbstractPublisher):
             temp_output = Path(temp_dir) / self.run_output_file
             self.write(temp_output)
 
+            rd = self.radar
             client = docker.from_env()
             self.container = client.containers.run(
                 self.container_image,
@@ -50,8 +51,10 @@ class Publisher(AbstractPublisher):
                 ports={"80/tcp": 8080},
                 environment={
                     "SERVER_NAMES": "localhost 127.0.0.1",
-                    "QUADRANTS": json.dumps(list(q.name for q in self.radar.quadrants)),
-                    "RINGS": json.dumps(list(r.name for r in self.radar.rings)),
+                    "QUADRANTS": json.dumps(
+                        [q.name for q in rd.quadrants(rd.QUADRANTS_TL_BL_TR_BR)]
+                    ),
+                    "RINGS": json.dumps([r.name for r in rd.rings_outward()]),
                 },
                 volumes={
                     temp_dir: {"bind": "/opt/build-your-own-radar/files", "mode": "rw"}

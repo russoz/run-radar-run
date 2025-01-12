@@ -7,6 +7,7 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -14,6 +15,10 @@ from typing import Union
 
 
 OptionalStrOrListStr = Optional[Union[str, List[str]]]
+
+
+class RadarException(Exception):
+    pass
 
 
 @dataclass
@@ -61,17 +66,27 @@ class Radar:
     MIN_NUM_RINGS = 3
     MAX_NUM_RINGS = 4
 
-    def __init__(self, rings: List[Ring], quadrants: List[Quadrant]) -> None:
+    Q_TL = "top_left"
+    Q_TR = "top_right"
+    Q_BL = "bottom_left"
+    Q_BR = "bottom_right"
+
+    QUADRANTS_CLOCKWISE = (Q_TL, Q_TR, Q_BR, Q_BL)
+    QUADRANTS_CTR_CLOCKWISE = (Q_TL, Q_BL, Q_BR, Q_TR)
+    QUADRANTS_TL_BL_TR_BR = (Q_TL, Q_BL, Q_TR, Q_BR)
+    QUADRANTS_TL_TR_BL_BR = (Q_TL, Q_TR, Q_BL, Q_BR)
+
+    def __init__(self, rings: Dict[str, Ring], quadrants: Dict[str, Quadrant]) -> None:
         if Radar.MIN_NUM_RINGS <= len(rings) <= Radar.MAX_NUM_RINGS:
-            self.rings = rings
+            self._rings = rings
         else:
-            raise ValueError(
+            raise RadarException(
                 f"Radar must have between {Radar.MIN_NUM_RINGS} and {Radar.MAX_NUM_RINGS}: {rings}"
             )
 
         if len(quadrants) != 4:
-            raise ValueError(f"Radar must have 4 quadrants: {quadrants}")
-        self.quadrants = quadrants
+            raise RadarException(f"Radar must have 4 quadrants: {quadrants}")
+        self._quadrants = quadrants
         self._blips = []
 
     def add_blip(self, blip: Blip) -> None:
@@ -80,6 +95,31 @@ class Radar:
     @property
     def blips(self) -> Tuple[Blip]:
         return tuple(self._blips)
+
+    @property
+    def rings_raw(self):
+        return self._rings
+
+    @property
+    def quadrants_raw(self):
+        return self._quadrants
+
+    def rings_outward(self) -> List[Ring]:
+        return [
+            self._rings[ring]
+            for ring in ["inner", "mid_inner", "mid_outer", "outer"]
+            if self._rings.get(ring)
+        ]
+
+    def rings_inward(self) -> List[Ring]:
+        return [
+            self._rings[ring]
+            for ring in ["outer", "mid_outer", "mid_inner", "inner"]
+            if self._rings.get(ring)
+        ]
+
+    def quadrants(self, order: Tuple) -> List[Quadrant]:
+        return [self._quadrants[q] for q in order]
 
 
 class RadarPresentation(ABC):

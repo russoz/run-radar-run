@@ -9,6 +9,7 @@ import pkgutil
 
 import runradarrun.publishers
 from runradarrun.ingest import Ingester
+from runradarrun.model import RadarException
 from runradarrun.output import Printer
 
 
@@ -76,6 +77,18 @@ def main():
         p = Printer(args.quiet)
         ingester = Ingester(pathlib.Path(args.input), options=args)
         radar = ingester.ingest()
+        p.print(
+            f"{p.align_item('Radar Path')}: {p.term.bold_yellow(str(ingester.radar_path.absolute()))}"
+        )
+        p.print(
+            f"{p.align_item('Rings')}: {', '.join(p.term.bold_green(r.name) for r in radar.rings_raw.values())}"
+        )
+        p.print(
+            f"{p.align_item('Quadrants')}: {', '.join(p.term.bold_green(q.name) for q in radar.quadrants_raw.values())}"
+        )
+        p.print(
+            f"{p.align_item('Processed')}: {p.term.bold_green}{len(radar.blips):2} blips{p.term.normal + p.term.clear_eol}"
+        )
 
         if args.publisher:
             publisher_class = publishers[args.publisher]
@@ -94,7 +107,7 @@ def main():
                     publisher.cleanup()
     except KeyboardInterrupt:
         pass
-    except Exception as e:  # pylint: disable=broad-exception-caught
+    except RadarException as e:
         print(f"\n{p.term.bold_red}ERROR: {e}{p.term.normal}")
 
 

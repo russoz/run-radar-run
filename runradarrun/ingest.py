@@ -10,6 +10,7 @@ import yaml
 from .model import Blip
 from .model import Quadrant
 from .model import Radar
+from .model import RadarException
 from .model import Ring
 from .output import Printer
 
@@ -21,14 +22,8 @@ class Ingester:
         self.radar_path = path
         self.options = options
         self.printer = Printer(options.quiet)
-        self.printer.print(
-            f"{self.printer.align_item('Radar Path')}: {self.printer.term.bold_yellow}{path.absolute()}{self.printer.term.normal}"
-        )
 
     def parse_blip(self, quadrant: Quadrant, ring: Ring, path: Path) -> Blip:
-        self.printer.print(
-            f"Processing: {path}{self.printer.term.clear_eol}\r", end="", flush=True
-        )
         with open(path) as blip_file:
             blip_spec = yaml.safe_load(blip_file)
 
@@ -52,34 +47,23 @@ class Ingester:
         with open(file) as f:
             specs = yaml.safe_load(f)
 
-        rings = [Ring(**r) for r in specs["rings"]]
-        quadrants = [Quadrant(**q) for q in specs["quadrants"]]
-        self.printer.print(
-            f"{self.printer.align_item('Rings')}: {', '.join(self.printer.term.bold_green(r.name) for r in rings)}"
-        )
-        self.printer.print(
-            f"{self.printer.align_item('Quadrants')}: {', '.join(self.printer.term.bold_green(q.name) for q in quadrants)}"
-        )
-
+        rings = {pos: Ring(**r) for pos, r in specs["rings"].items()}
+        quadrants = {pos: Quadrant(**q) for pos, q in specs["quadrants"].items()}
         radar = Radar(rings, quadrants)
         count = 0
 
-        for ring in rings:
-            for quadrant in quadrants:
+        for ring in rings.values():
+            for quadrant in quadrants.values():
                 blips_dir: Path = self.radar_path / quadrant.id / ring.id
                 if not blips_dir.exists():
                     continue
                 if not blips_dir.is_dir():
-                    raise OSError(f"Path {blips_dir} must be a directory")
+                    raise RadarException(f"Path {blips_dir} must be a directory")
 
                 for path in blips_dir.iterdir():
                     if path.as_posix().endswith((".yaml", ".yml")):
                         blip = self.parse_blip(quadrant, ring, path)
                         radar.add_blip(blip)
                         count = count + 1
-
-        self.printer.print(
-            f"{self.printer.align_item('Processed')}: {self.printer.term.bold_green}{count:2} blips{self.printer.term.normal + self.printer.term.clear_eol}"
-        )
 
         return radar

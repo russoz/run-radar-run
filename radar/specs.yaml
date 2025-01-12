@@ -1,26 +1,28 @@
 ---
-# Quadrants positions
-#
-#  0  2
-#  1  3
-#
 quadrants:
-  - id: strat
+  top_left:
+    id: strat
     name: Strategies
-  - id: tools
+  top_right:
+    id: tools
     name: Tools
-  - id: techniques
+  bottom_left:
+    id: techniques
     name: Techniques
-  - id: lang
+  bottom_right:
+    id: lang
     name: Languages & Frameworks
 
-# from center going outwards
 rings:
-  - id: adopt
+  inner:
+    id: adopt
     name: Adopt
-  - id: trial
+  mid_inner:
+    id: trial
     name: Trial
-  - id: assess
+  mid_outer:
+    id: assess
     name: Assess
-  - id: hold
+  outer:
+    id: hold
     name: Hold
