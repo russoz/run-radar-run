@@ -7,16 +7,25 @@ from blessed import Terminal
 class Printer:
     def __init__(self, quiet) -> None:
         self.quiet = quiet
-        self.term = Terminal()
+        self._term = None
 
-    def print(self, *args, **kwargs):
+    @property
+    def term(self) -> Terminal:
+        if not self._term:
+            self._term = Terminal()
+        return self._term
+
+    def print(self, *args, **kwargs) -> None:
         if not self.quiet:
             print(*args, **kwargs)
+
+    def align_item(self, item: str) -> str:
+        return self.term.rjust(item, 12)
 
     def logger(self, stream, log_height, trigger=None):
         try:
             self.print(
-                self.term.hide_cursor()
+                self.term.hide_cursor
                 + "\n" * (log_height + 1)
                 + self.term.move_up(log_height),
                 end="",
@@ -34,7 +43,8 @@ class Printer:
                     for log_line, ending in log_lines:
                         self.print(
                             (
-                                f"{log_line}{self.term.clear_eol()}" + "\n"
+                                f"{self.term.red}{log_line}{self.term.normal + self.term.clear_eol}"
+                                + "\n"
                                 if ending
                                 else ""
                             ),
@@ -45,6 +55,4 @@ class Printer:
                 if trigger:
                     trigger(line)
         finally:
-            print(
-                f"{self.term.normal_cursor()}{self.term.move_up()}{self.term.clear_eos()}"
-            )
+            print(f"{self.term.normal_cursor}{self.term.move_up}{self.term.clear_eos}")

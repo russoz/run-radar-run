@@ -5,13 +5,13 @@
 import argparse
 import pathlib
 
-from runradar.ingest import Ingester
-from runradar.output import Printer
-from runradar.publishers.twbyor import TXBYORPublisher
+from runradarrun.ingest import Ingester
+from runradarrun.output import Printer
+from runradarrun.publishers.twbyor import TXBYORPublisher
 
 
 publishers = {
-    "tw-byor": TXBYORPublisher,
+    "twbyor": TXBYORPublisher,
 }
 
 
@@ -26,8 +26,9 @@ def main():
     )
     parser.add_argument(
         "--publisher",
-        "-p",
-        default="tw-byor",
+        "-P",
+        default="twbyor",
+        choices=sorted(publishers.keys()),
         help="publisher for the data radar",
     )
     parser.add_argument(
@@ -70,7 +71,9 @@ def main():
 
         if args.run or args.run_only:
             try:
-                p.print(f"URL: {publisher.url}")
+                p.print(
+                    f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
+                )
                 publisher.run()
             except KeyboardInterrupt:
                 pass

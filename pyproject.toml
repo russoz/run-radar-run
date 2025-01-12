@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "run-radar"
+name = "run-radar-run"
 version = "0.1"
-description = "Run Tech Radar"
+description = "Run, Radar, Run - Running your own tech radar should be easy"
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -13,7 +13,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Testing",
@@ -22,12 +21,11 @@ classifiers = [
 keywords = [ "tech-radar" ]
 
 packages = [
-    { include = "run-radar" },
-    { include = "runradar" }
+    { include = "runradarrun" }
 ]
 
 [tool.poetry.scripts]
-andebox = "run-radar:main"
+run-radar-run = "runradarrun.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.12"

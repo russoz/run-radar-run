@@ -21,11 +21,13 @@ class Ingester:
         self.radar_path = path
         self.options = options
         self.printer = Printer(options.quiet)
-        self.printer.print(f"Radar path: {path.absolute()}")
+        self.printer.print(
+            f"{self.printer.align_item('Radar path')}: {self.printer.term.bold_yellow}{path.absolute()}{self.printer.term.normal}"
+        )
 
     def parse_blip(self, quadrant: Quadrant, ring: Ring, path: Path) -> Blip:
         self.printer.print(
-            f"Processing: {path}{self.printer.term.clear_eol()}\r", end="", flush=True
+            f"Processing: {path}{self.printer.term.clear_eol}\r", end="", flush=True
         )
         with open(path) as blip_file:
             blip_spec = yaml.safe_load(blip_file)
@@ -52,8 +54,12 @@ class Ingester:
 
         rings = [Ring(**r) for r in specs["rings"]]
         quadrants = [Quadrant(**q) for q in specs["quadrants"]]
-        self.printer.print(f"Rings: {', '.join(r.name for r in rings)}")
-        self.printer.print(f"Quadrants: {', '.join(q.name for q in quadrants)}")
+        self.printer.print(
+            f"{self.printer.align_item('Rings')}: {', '.join(self.printer.term.bold_green(r.name) for r in rings)}"
+        )
+        self.printer.print(
+            f"{self.printer.align_item('Quadrants')}: {', '.join(self.printer.term.bold_green(q.name) for q in quadrants)}"
+        )
 
         radar = Radar(rings, quadrants)
         count = 0
@@ -72,6 +78,8 @@ class Ingester:
                         radar.add_blip(blip)
                         count = count + 1
 
-        self.printer.print(f"Processed: {count:2} blips{self.printer.term.clear_eol()}")
+        self.printer.print(
+            f"{self.printer.align_item('Processed')}: {self.printer.term.bold_green}{count:2} blips{self.printer.term.normal + self.printer.term.clear_eol}"
+        )
 
         return radar

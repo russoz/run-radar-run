@@ -16,7 +16,7 @@ class TXBYORPublisher(Publisher):
     container_image = "wwwthoughtworks/build-your-own-radar:latest"
     container = None
     publishing_url = "http://localhost:8080/"
-    run_output_file = "runradar.json"
+    run_output_file = "run-radar-run.json"
 
     def make_output(self):
         results = []
