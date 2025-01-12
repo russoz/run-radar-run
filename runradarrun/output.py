@@ -27,7 +27,8 @@ class Printer:
             self.print(
                 self.term.hide_cursor
                 + "\n" * (log_height + 1)
-                + self.term.move_up(log_height),
+                + self.term.move_up(log_height)
+                + self.term.grey,
                 end="",
             )
             start_row, _ = self.term.get_location()
@@ -36,18 +37,14 @@ class Printer:
             for line in stream:
                 line = line.decode("utf-8").strip()
                 for line1 in self.term.wrap(line) or [""]:
-                    log_lines.append((line1, len(line1) < self.term.width))
+                    log_lines.append(line1)
 
                 log_lines = log_lines[-log_height:]
+                log_lines[-1] = log_lines[-1] + self.term.clear_eol + "\n"
                 with self.term.location(0, start_row):
-                    for log_line, ending in log_lines:
+                    for log_line in log_lines:
                         self.print(
-                            (
-                                f"{self.term.red}{log_line}{self.term.normal + self.term.clear_eol}"
-                                + "\n"
-                                if ending
-                                else ""
-                            ),
+                            (f"{log_line}"),
                             end="",
                             flush=True,
                         )
@@ -55,4 +52,6 @@ class Printer:
                 if trigger:
                     trigger(line)
         finally:
-            print(f"{self.term.normal_cursor}{self.term.move_up}{self.term.clear_eos}")
+            print(
+                f"{self.term.normal}{self.term.normal_cursor}{self.term.move_up}{self.term.clear_eos}"
+            )
