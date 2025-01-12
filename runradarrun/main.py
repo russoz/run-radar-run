@@ -21,20 +21,16 @@ def iter_namespace(ns_pkg):
 
 
 def load_publishers():
-    mod_names = [name for finder, name, ispkg in iter_namespace(runradarrun.publishers)]
-
-    results = {}
-    for name in mod_names:
-        publisher = getattr(importlib.import_module(name), "Publisher")
-        cli_id = publisher.cli_id()
-        results[cli_id] = publisher
-    return results
-
-
-publishers = load_publishers()
+    return {
+        publisher.cli_id(): publisher
+        for finder, name, ispkg in iter_namespace(runradarrun.publishers)
+        for publisher in [getattr(importlib.import_module(name), "Publisher")]
+    }
 
 
 def main():
+    publishers = load_publishers()
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--publisher",
@@ -75,29 +71,31 @@ def main():
         help="radar definition directory",
     )
 
-    args = parser.parse_args()
-    ingester = Ingester(pathlib.Path(args.input), options=args)
-    radar = ingester.ingest()
-
-    if args.publisher:
+    try:
+        args = parser.parse_args()
         p = Printer(args.quiet)
+        ingester = Ingester(pathlib.Path(args.input), options=args)
+        radar = ingester.ingest()
 
-        publisher_class = publishers[args.publisher]
-        publisher = publisher_class(radar, options=args)
+        if args.publisher:
+            publisher_class = publishers[args.publisher]
+            publisher = publisher_class(radar, options=args)
 
-        if args.output:
-            publisher.write(args.output)
+            if args.output:
+                publisher.write(args.output)
 
-        if args.run or args.run_only:
-            try:
-                p.print(
-                    f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
-                )
-                publisher.run()
-            except KeyboardInterrupt:
-                pass
-            finally:
-                publisher.cleanup()
+            if args.run or args.run_only:
+                try:
+                    p.print(
+                        f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
+                    )
+                    publisher.run()
+                finally:
+                    publisher.cleanup()
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print(f"\n{p.term.bold_red}ERROR: {e}{p.term.normal}")
 
 
 if __name__ == "__main__":
