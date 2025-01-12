@@ -22,7 +22,7 @@ class Ingester:
         self.options = options
         self.printer = Printer(options.quiet)
         self.printer.print(
-            f"{self.printer.align_item('Radar path')}: {self.printer.term.bold_yellow}{path.absolute()}{self.printer.term.normal}"
+            f"{self.printer.align_item('Radar Path')}: {self.printer.term.bold_yellow}{path.absolute()}{self.printer.term.normal}"
         )
 
     def parse_blip(self, quadrant: Quadrant, ring: Ring, path: Path) -> Blip:
