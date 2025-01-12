@@ -18,13 +18,6 @@ publishers = {
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input",
-        "-i",
-        type=pathlib.Path,
-        default="./radar",
-        help="radar input file in YAML format",
-    )
-    parser.add_argument(
         "--publisher",
         "-P",
         default="twbyor",
@@ -54,6 +47,12 @@ def main():
         "-q",
         help="do not print output",
         action="store_true",
+    )
+    parser.add_argument(
+        "input",
+        type=pathlib.Path,
+        default="./radar",
+        help="radar definition directory",
     )
 
     args = parser.parse_args()
