@@ -1,0 +1,10 @@
+---
+blip:
+  name: ARA
+  is_new: false
+  description: |
+    ARA Records Ansible
+  references:
+    - https://ara.recordsansible.org/
+    - https://ara.readthedocs.io/en/latest/
+    - https://github.com/ansible-community/ara/blob/master/README.md#getting-started

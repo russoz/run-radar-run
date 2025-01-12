@@ -1,0 +1,10 @@
+---
+blip:
+  name: ZUUL
+  is_new: false
+  description: |
+    CI/CD with Ansible. Use the same Ansible playbooks to deploy your system and run your tests.
+  references:
+    - https://zuul-ci.org/
+    - https://zuul-ci.org/docs/
+    - https://pypi.org/project/zuul/

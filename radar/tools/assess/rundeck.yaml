@@ -1,0 +1,9 @@
+---
+blip:
+  name: Rundeck
+  is_new: false
+  description: |
+    Rundeck is a free and open source software that automates tasks and workflows across teams and environments.
+  references:
+    - https://www.rundeck.com/
+    - https://docs.rundeck.com/docs/
