@@ -38,7 +38,7 @@ class Publisher(AbstractPublisher):
         return json.dumps(results)
 
     def run(self):
-        with TemporaryDirectory(dir=".", prefix=".runradar-") as temp_dir:
+        with TemporaryDirectory(dir=".", prefix=".runradarrun-") as temp_dir:
             os.chmod(temp_dir, 0o755)
             temp_output = Path(temp_dir) / self.run_output_file
             self.write(temp_output)

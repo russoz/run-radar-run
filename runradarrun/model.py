@@ -3,8 +3,6 @@
 #
 import argparse
 import webbrowser
-from abc import ABC
-from abc import abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
@@ -120,19 +118,6 @@ class Radar:
 
     def quadrants(self, order: Tuple) -> List[Quadrant]:
         return [self._quadrants[q] for q in order]
-
-
-class RadarPresentation(ABC):
-    def __init__(self, radar: Radar) -> None:
-        self.radar = radar
-
-    @abstractmethod
-    def run(self):
-        pass
-
-    @abstractmethod
-    def serialize(self) -> str:
-        pass
 
 
 class AbstractPublisher:
