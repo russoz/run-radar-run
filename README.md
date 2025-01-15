@@ -20,7 +20,7 @@ $ ./run-radar-run
 Or if you intend to see a specific radar directory, run:
 
 ```bash
-$ ./run-radar -i tests/radar
+$ ./run-radar-run -i tests/radar
 ```
 
 ### Publishers
