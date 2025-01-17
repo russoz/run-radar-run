@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # code: language=python tabSize=4
 #
+
+__version__ = "0.1"
+
+
 import argparse
 import importlib
 import pathlib
