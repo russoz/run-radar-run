@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "run-radar-run"
-version = "0.1"
+version = "0.2"
 description = "Run, Radar, Run - Running your own tech radar should be easy"
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "MIT"
