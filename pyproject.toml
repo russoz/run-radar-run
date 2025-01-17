@@ -33,12 +33,15 @@ pyyaml = ">=5.4"
 docker = ">=7.1.0"
 blessed = ">=1.20.0"
 gitpython = ">=3.1.44"
+virtualenv-pyenv = "*"
+bump2version = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3.1,<9.0.0"
 pytest-mock = "^3.10.0"
 pylint = ">=2.17.4,<4.0.0"
 flake8 = ">=6,<8"
+
 
 [build-system]
 requires = ["poetry-core"]
