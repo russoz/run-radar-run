@@ -94,21 +94,20 @@ def main():
             f"{p.align_item('Processed')}: {p.term.bold_green}{len(radar.blips):2} blips{p.term.normal + p.term.clear_eol}"
         )
 
-        if args.publisher:
-            publisher_class = publishers[args.publisher]
-            publisher = publisher_class(radar, options=args)
+        publisher_class = publishers[args.publisher]
+        publisher = publisher_class(radar, options=args)
 
-            if args.output:
-                publisher.write(args.output)
+        if args.output:
+            publisher.write(args.output)
 
-            if args.run or args.run_only:
-                try:
-                    p.print(
-                        f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
-                    )
-                    publisher.run()
-                finally:
-                    publisher.cleanup()
+        if args.run or args.run_only:
+            try:
+                p.print(
+                    f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
+                )
+                publisher.run()
+            finally:
+                publisher.cleanup()
     except KeyboardInterrupt:
         pass
     except RadarException as e:
