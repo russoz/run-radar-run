@@ -7,18 +7,12 @@ from typing import Optional
 
 import yaml
 
-from .model import Blip
-from .model import Quadrant
-from .model import Radar
-from .model import RadarException
-from .model import Ring
+from .model import Blip, Quadrant, Radar, RadarException, Ring
 from .output import Printer
 
 
 class Ingester:
-    def __init__(
-        self, path: Path, options: Optional[argparse.Namespace] = None
-    ) -> None:
+    def __init__(self, path: Path, options: Optional[argparse.Namespace] = None) -> None:
         self.radar_path = path
         self.options = options
         self.printer = Printer(options.quiet)

@@ -3,7 +3,7 @@
 # code: language=python tabSize=4
 #
 
-__version__ = "0.2"
+__version__ = "0.2.0"
 
 
 import argparse
@@ -81,18 +81,10 @@ def main():
         p = Printer(args.quiet)
         ingester = Ingester(pathlib.Path(args.input), options=args)
         radar = ingester.ingest()
-        p.print(
-            f"{p.align_item('Radar Path')}: {p.term.bold_yellow(str(ingester.radar_path.absolute()))}"
-        )
-        p.print(
-            f"{p.align_item('Rings')}: {', '.join(p.term.bold_green(r.name) for r in radar.rings_raw.values())}"
-        )
-        p.print(
-            f"{p.align_item('Quadrants')}: {', '.join(p.term.bold_green(q.name) for q in radar.quadrants_raw.values())}"
-        )
-        p.print(
-            f"{p.align_item('Processed')}: {p.term.bold_green}{len(radar.blips):2} blips{p.term.normal + p.term.clear_eol}"
-        )
+        p.print(f"{p.align_item('Radar Path')}: {p.term.bold_yellow(str(ingester.radar_path.absolute()))}")
+        p.print(f"{p.align_item('Rings')}: {', '.join(p.term.bold_green(r.name) for r in radar.rings_raw.values())}")
+        p.print(f"{p.align_item('Quadrants')}: {', '.join(p.term.bold_green(q.name) for q in radar.quadrants_raw.values())}")
+        p.print(f"{p.align_item('Processed')}: {p.term.bold_green}{len(radar.blips):2} blips{p.term.normal + p.term.clear_eol}")
 
         publisher_class = publishers[args.publisher]
         publisher = publisher_class(radar, options=args)
@@ -102,9 +94,7 @@ def main():
 
         if args.run or args.run_only:
             try:
-                p.print(
-                    f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}"
-                )
+                p.print(f"{p.align_item('Radar URL')}: {p.term.bold_blue}{p.term.link(publisher.url, publisher.url)}{p.term.normal}")
                 publisher.run()
             finally:
                 publisher.cleanup()

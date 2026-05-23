@@ -25,10 +25,7 @@ class Printer:
     def logger(self, stream, log_height, trigger=None):
         try:
             self.print(
-                self.term.hide_cursor
-                + "\n" * (log_height + 1)
-                + self.term.move_up(log_height)
-                + self.term.grey,
+                self.term.hide_cursor + "\n" * (log_height + 1) + self.term.move_up(log_height) + self.term.grey,
                 end="",
             )
             start_row, _ = self.term.get_location()
@@ -48,6 +45,4 @@ class Printer:
                 if trigger:
                     trigger(line)
         finally:
-            print(
-                f"{self.term.normal}{self.term.normal_cursor}{self.term.move_up}{self.term.clear_eos}"
-            )
+            print(f"{self.term.normal}{self.term.normal_cursor}{self.term.move_up}{self.term.clear_eos}")

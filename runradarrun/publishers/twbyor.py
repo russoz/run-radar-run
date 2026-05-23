@@ -51,14 +51,10 @@ class Publisher(AbstractPublisher):
                 ports={"80/tcp": 8080},
                 environment={
                     "SERVER_NAMES": "localhost 127.0.0.1",
-                    "QUADRANTS": json.dumps(
-                        [q.name for q in rd.quadrants(rd.QUADRANTS_TL_BL_TR_BR)]
-                    ),
+                    "QUADRANTS": json.dumps([q.name for q in rd.quadrants(rd.QUADRANTS_TL_BL_TR_BR)]),
                     "RINGS": json.dumps([r.name for r in rd.rings_outward()]),
                 },
-                volumes={
-                    temp_dir: {"bind": "/opt/build-your-own-radar/files", "mode": "rw"}
-                },
+                volumes={temp_dir: {"bind": "/opt/build-your-own-radar/files", "mode": "rw"}},
                 detach=True,
                 stream=True,
             )
@@ -81,8 +77,4 @@ class Publisher(AbstractPublisher):
 
     @property
     def url(self):
-        return (
-            f"{self.publishing_url}"
-            "?documentId=http%3A%2F%2Flocalhost%3A8080%2Ffiles%2F"
-            f"{self.run_output_file}"
-        )
+        return f"{self.publishing_url}?documentId=http%3A%2F%2Flocalhost%3A8080%2Ffiles%2F{self.run_output_file}"
