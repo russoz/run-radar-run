@@ -10,6 +10,8 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/ci-tests.yml
+    permissions:
+      contents: read
 
   build:
     runs-on: ubuntu-latest
@@ -37,9 +39,11 @@ jobs:
 
       - name: Create Release
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
           GH_TOKEN: ${{ github.token }}
         run: poe release
+
+      - name: Build package
+        run: poetry build
 
       - name: Check if dist folder has content
         id: check_dist
@@ -51,7 +55,7 @@ jobs:
           fi
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ steps.check_dist.outputs.has_content == 'true' }}
         with:
           name: run-radar-run-distributions
@@ -72,7 +76,7 @@ jobs:
 
     steps:
       - name: Download all the dists
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: run-radar-run-distributions
           path: dist/

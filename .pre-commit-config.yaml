@@ -19,6 +19,6 @@ repos:
       - id: poetry-lock-check
         name: Verify poetry.lock is up to date
         language: system
-        entry: poetry lock --check
+        entry: poetry check --lock
         files: ^pyproject\.toml$
         pass_filenames: false
