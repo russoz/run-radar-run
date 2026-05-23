@@ -5,9 +5,9 @@ import argparse
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple
 
-OptionalStrOrListStr = Optional[Union[str, List[str]]]
+OptionalStrOrListStr = str | list[str] | None
 
 
 class RadarException(Exception):
@@ -32,7 +32,7 @@ class Blip:
         name: str,
         ring: str,
         quadrant: str,
-        previous_ring: Optional[str] = None,
+        previous_ring: str | None = None,
         description: OptionalStrOrListStr = None,
         references: OptionalStrOrListStr = None,
         tags: OptionalStrOrListStr = None,
@@ -108,7 +108,7 @@ class Radar:
 class AbstractPublisher:
     publishing_url = None
 
-    def __init__(self, radar: Radar, options: Optional[argparse.Namespace] = None) -> None:
+    def __init__(self, radar: Radar, options: argparse.Namespace | None = None) -> None:
         self.radar = radar
         self.options = options
         self._output = None
@@ -144,7 +144,7 @@ class AbstractPublisher:
         with open(output, "w") as outputfile:
             outputfile.write(self.output)
 
-    def open_url(self, url: Optional[str] = None) -> None:
+    def open_url(self, url: str | None = None) -> None:
         if not url:
             url = self.url
         if not self.options.run_only:

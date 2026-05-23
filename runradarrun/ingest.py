@@ -3,7 +3,6 @@
 #
 import argparse
 from pathlib import Path
-from typing import Optional
 
 import yaml
 
@@ -12,7 +11,7 @@ from .output import Printer
 
 
 class Ingester:
-    def __init__(self, path: Path, options: Optional[argparse.Namespace] = None) -> None:
+    def __init__(self, path: Path, options: argparse.Namespace | None = None) -> None:
         self.radar_path = path
         self.options = options
         self.printer = Printer(options.quiet)
