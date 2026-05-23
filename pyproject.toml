@@ -63,7 +63,7 @@ branch = "main"
 changelog = { file = "CHANGELOG.md", mode = "init" }
 build_command = "poetry build"
 dist_path = "dist/"
-upload_to_pypi = true
+upload_to_pypi = false
 upload_to_release = true
 commit_parser = "conventional"
 major_on_zero = true
@@ -100,5 +100,4 @@ sequence = [
 [tool.poe.tasks.release]
 sequence = [
   {cmd = "semantic-release --verbose version"},
-  {cmd = "semantic-release --verbose publish"},
 ]
