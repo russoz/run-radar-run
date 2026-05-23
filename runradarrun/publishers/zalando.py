@@ -12,7 +12,6 @@ from git import Repo
 from ..model import AbstractPublisher
 from ..output import Printer
 
-
 html_content = """\
 <!DOCTYPE html>
 <html lang="en">
@@ -83,9 +82,7 @@ class Publisher(AbstractPublisher):
             repo_url="https://github.com/zalando/tech-radar",
             title="Zalando Tech Radar",
             date="2025.01",  # kind of a version
-            quadrants=[
-                {"name": q.name} for q in self.radar.quadrants(self.quadrant_order)
-            ],
+            quadrants=[{"name": q.name} for q in self.radar.quadrants(self.quadrant_order)],
             rings=[
                 dict(
                     name=r.name.upper(),

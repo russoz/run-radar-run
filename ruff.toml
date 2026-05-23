@@ -1,0 +1,13 @@
+line-length = 160
+target-version = "py312"
+exclude = [".git", "__pycache__", "build", "dist", ".tox"]
+
+[lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E203"]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.isort]
+known-first-party = ["runradarrun"]
