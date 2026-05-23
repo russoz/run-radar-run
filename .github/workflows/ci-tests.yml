@@ -1,0 +1,45 @@
+name: Test run-radar-run
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+jobs:
+  test:
+    name: CI (py${{ matrix.python }})
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - "3.12"
+          - "3.13"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install poetry and poe
+        run: >
+          python -m pip install --upgrade pip
+          && pip install poetry poethepoet
+
+      - name: Install all dependencies (including dev)
+        run: poetry install --with dev
+
+      - name: Lint
+        run: poe lint
+
+      - name: Run tests
+        run: poe test

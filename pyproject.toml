@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "run-radar-run"
-version = "0.2"
+version = "0.2.0"
 description = "Run, Radar, Run - Running your own tech radar should be easy"
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/russoz/run-radar-run"
+repository = "https://github.com/russoz/run-radar-run"
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
@@ -27,22 +29,76 @@ packages = [
 [tool.poetry.scripts]
 run-radar-run = "runradarrun.main:main"
 
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/russoz/run-radar-run/issues"
+"Source Code" = "https://github.com/russoz/run-radar-run"
+
 [tool.poetry.dependencies]
 python = "^3.12"
 pyyaml = ">=5.4"
 docker = ">=7.1.0"
 blessed = ">=1.20.0"
 gitpython = ">=3.1.44"
-virtualenv-pyenv = "*"
-bump2version = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3.1,<10.0.0"
 pytest-mock = "^3.10.0"
-pylint = ">=2.17.4,<4.0.0"
-flake8 = ">=6,<8"
+ruff = ">=0.9.0"
+poethepoet = ">=0.27.0"
+python-semantic-release = ">=9.21.1"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variables = [
+    "runradarrun/main.py:__version__",
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+branch = "main"
+changelog = { file = "CHANGELOG.md", mode = "init" }
+build_command = "poetry build"
+dist_path = "dist/"
+upload_to_pypi = true
+upload_to_release = true
+commit_parser = "conventional"
+major_on_zero = true
+tag_format = "v{version}"
+parse_version_from_tag = true
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+repository = "russoz/run-radar-run"
+
+[tool.poe.tasks]
+test = "pytest -v"
+lint = "ruff check ."
+fmt = "ruff format ."
+
+[tool.poe.tasks.check]
+sequence = [
+  {cmd = "ruff check ."},
+  {cmd = "ruff format --check ."},
+]
+
+[tool.poe.tasks.qa]
+sequence = ["check", "test"]
+
+[tool.poe.tasks.deps]
+sequence = [
+  {cmd = "poetry update"},
+  {cmd = "poetry lock"},
+]
+
+[tool.poe.tasks.release]
+sequence = [
+  {cmd = "semantic-release --verbose version"},
+  {cmd = "semantic-release --verbose publish"},
+]
