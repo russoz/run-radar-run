@@ -11,17 +11,32 @@ Using run-radar-run
 
 ### Running the Radar
 
-Clone this repository and run:
+Install it from PyPI:
 
 ```bash
-$ ./run-radar-run
+$ pip install run-radar-run
 ```
 
-Or if you intend to see a specific radar directory, run:
+Then run it from a directory containing a `radar/` subdirectory (the default input):
 
 ```bash
-$ ./run-radar-run -i tests/radar
+$ run-radar-run
 ```
+
+Or pass a specific radar directory as an argument:
+
+```bash
+$ run-radar-run path/to/radar
+```
+
+When working from a clone of this repository, use Poetry instead:
+
+```bash
+$ poetry install
+$ poetry run run-radar-run
+```
+
+Run `run-radar-run --help` for all options (publisher selection, output path, running the radar, etc.).
 
 ### Publishers
 
