@@ -8,6 +8,8 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: auto
+    commit-message:
+      prefix: "fix(deps)"
     groups:
       python-dependencies:
         patterns:
