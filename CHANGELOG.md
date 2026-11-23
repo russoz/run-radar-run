@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.4 (2026-11-23)
+
+### Bug Fixes
+
+- **deps-dev**: Bump ruff ([#28](https://github.com/russoz/run-radar-run/pull/28),
+  [`fccdbfa`](https://github.com/russoz/run-radar-run/commit/fccdbfa1e5cdcfef9527cdce9860f8d6cff25077))
+
+
 ## v1.0.3 (2026-11-16)
 
 ### Bug Fixes
